@@ -12,7 +12,8 @@
     "@slack/bolt": "^3.11.0",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.6"
+    "typeorm": "^0.3.6",
+    "typeorm-naming-strategies": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.30",

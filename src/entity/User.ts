@@ -1,18 +1,44 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import {
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    Timestamp,
+    UpdateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    ManyToOne
+  } from 'typeorm'
+
+import { Team } from './Team'
+import { Channel } from './Channel'
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn({ unsigned: true })
+    readonly id: number
+
+    @Column({ unsigned: true, unique: true })
+    slackId: number
+
+    @ManyToOne(() => Team, (team) => team.users)
+    team: Team
+
+    @ManyToOne(() => Channel, (channel) => channel.users)
+    channel: Channel
 
     @Column()
-    firstName: string
+    name: string
 
-    @Column()
-    lastName: string
+    @Column({ nullable: true })
+    birthday: Date
 
-    @Column()
-    age: number
+    @CreateDateColumn()
+    createdAt: Timestamp
 
+    @UpdateDateColumn()
+    updatedAt: Timestamp
+
+    @DeleteDateColumn()
+    deletedAt: Timestamp
 }
