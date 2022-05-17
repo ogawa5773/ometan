@@ -6,28 +6,29 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany
+  OneToMany,
+  BaseEntity
 } from 'typeorm'
 
 import { Channel } from './Channel'
 import { User } from './User'
 
 @Entity()
-export class Team {
+export class Team extends BaseEntity {
 
   @PrimaryGeneratedColumn({ unsigned: true })
   readonly id: number
 
-  @OneToMany(() => Channel, (channel) => channel.team)
+  @OneToMany(() => Channel, (channel) => channel.team, { cascade: ["remove"] })
   channels: Channel[]
 
-  @OneToMany(() => User, (user) => user.team)
+  @OneToMany(() => User, (user) => user.team, { cascade: ["remove"] })
   users: User[]
 
-  @Column({ unsigned: true, unique: true })
-  slackId: number
+  @Column({ unique: true })
+  slackId: string
 
-  @Column()
+  @Column({ nullable: true })
   name: string
 
   @CreateDateColumn()

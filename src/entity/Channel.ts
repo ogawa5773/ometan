@@ -7,20 +7,21 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
-  OneToMany
+  OneToMany,
+  BaseEntity
 } from 'typeorm'
 
 import { Team } from './Team'
 import { User } from './User'
 
 @Entity()
-export class Channel {
+export class Channel extends BaseEntity {
 
   @PrimaryGeneratedColumn({ unsigned: true })
   readonly id: number
 
-  @Column({ unsigned: true, unique: true })
-  slackId: number
+  @Column({ unique: true })
+  slackId: string
 
   @ManyToOne(() => Team, (team) => team.users)
   team: Team
@@ -28,7 +29,7 @@ export class Channel {
   @OneToMany(() => User, (user) => user.team)
   users: User[]
 
-  @Column()
+  @Column({ nullable: true })
   name: string
 
   @CreateDateColumn()
