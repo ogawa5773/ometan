@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "tsnd --respawn --require dotenv/config src/index.ts"
+    "dev": "tsnd --respawn --require dotenv/config src/app.ts"
   },
   "keywords": [],
   "author": "",

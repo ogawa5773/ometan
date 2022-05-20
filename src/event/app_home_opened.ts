@@ -1,4 +1,4 @@
-import { app } from "./app";
+import { app } from "../app";
 
 app.event('app_home_opened', async ({ payload, client }) => {
   await client.views.publish({

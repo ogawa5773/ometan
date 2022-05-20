@@ -1,3 +1,3 @@
 import './app';
-import './backend';
-import './frontend';
+import './event/backend';
+
