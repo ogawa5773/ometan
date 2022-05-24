@@ -1,5 +1,6 @@
 import {
   Column,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Timestamp,

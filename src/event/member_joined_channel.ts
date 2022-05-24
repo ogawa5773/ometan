@@ -3,10 +3,13 @@ import { Team } from "../entity/Team";
 import { Channel } from "../entity/Channel";
 
 app.event('member_joined_channel',async ({ body, say }) => {
-  if (body.api_app_id != 'A03DNU4DTGC') { return }
+  if (body.api_app_id != process.env.APP_ID) { return }
   
-  const team = await Team.save({ slackId: body.team_id })
-  await Channel.save({ team: team, slackId: body.channel })
+  let team = await Team.findOneBy({ slackId: body.team_id})
+  const channel = await Channel.findOneBy({ slackId: body.event.channel })
+
+  team = await Team.save({ id: team?.id, slackId: body.team_id })
+  await Channel.save({ id: channel?.id , slackId: body.event.channel, team: team })
 
   say({
     "blocks": [
@@ -19,7 +22,7 @@ app.event('member_joined_channel',async ({ body, say }) => {
         }
       },    
       {
-        "block_id": "assign_birthday",
+        "block_id": "channel_assign_birthday",
         "type": "actions",
         "elements": [
           {
@@ -30,7 +33,7 @@ app.event('member_joined_channel',async ({ body, say }) => {
               "text": "Select a date",
               "emoji": true
             },
-            "action_id": "birthday_selected"
+            "action_id": "birthday_selected_via_channel"
           }
         ]
       }

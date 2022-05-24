@@ -1,9 +1,6 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { Team } from "./entity/Team"
-import { Channel } from "./entity/Channel"
-import { User } from "./entity/User"
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -14,7 +11,9 @@ export const AppDataSource = new DataSource({
     database: "ome",
     synchronize: true,
     logging: false,
-    entities: [Team, Channel, User],
+    entities: [
+        "src/entity/*.ts"
+    ],
     migrations: [],
     subscribers: [],
     namingStrategy: new SnakeNamingStrategy(),

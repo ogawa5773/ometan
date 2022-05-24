@@ -1,5 +1,6 @@
 import {
   Column,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Timestamp,
@@ -23,7 +24,7 @@ export class Channel extends BaseEntity {
   @Column({ unique: true })
   slackId: string
 
-  @ManyToOne(() => Team, (team) => team.users)
+  @ManyToOne(() => Team, (team) => team.channels)
   team: Team
 
   @OneToMany(() => User, (user) => user.team)

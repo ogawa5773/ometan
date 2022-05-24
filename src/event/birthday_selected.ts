@@ -4,33 +4,55 @@ import { Team } from "../entity/Team";
 import { Channel } from "../entity/Channel";
 import { User } from "../entity/User";
 
-app.action<BlockAction>({ action_id: 'birthday_selected', block_id: 'assign_birthday' },
+app.action<BlockAction>({ action_id: 'birthday_selected_via_channel', block_id: 'channel_assign_birthday' },
+  async ({ body, client, ack }) => {
+    await ack();
+
+    const birthday = body.state?.values.channel_assign_birthday.birthday_selected_via_channel.selected_date
+    if (birthday == null) { return }
+
+    const team = await Team.findOneBy({ slackId: body.team?.id || '' })
+    if (team == null) { return }
+
+    const channel = await Channel.findOneBy({ slackId: body.channel?.id || '' })
+    if ( channel == null) { return }
+
+    const user = await User.findOneBy({ slackId: body.user.id || '' })
+    await User.save({ 
+      id: user?.id,
+      slackId: body.user.id, 
+      team: team, 
+      channel: channel,
+      birthday: new Date(birthday) 
+    })
+
+    await client.chat.postMessage({
+      channel: body.user.id,
+      text: `誕生日を${birthday}に登録しました`
+    });      
+  });
+
+
+  app.action<BlockAction>({ action_id: 'birthday_selected_via_home', block_id: 'home_assign_birthday' },
   async ({ body, client, ack, logger }) => {
     await ack();
 
-    const birthday = body.view?.state.values.assign_birthday.birthday_selected.selected_date
+    const birthday = body.view?.state.values.home_assign_birthday.birthday_selected_via_home.selected_date
     if (birthday == null) { return }
-    
-    if (body.team?.id == null) { return }
-    const team = await Team.findOneBy({ slackId: body.team?.id })
+
+    const team = await Team.findOneBy({ slackId: body.team?.id || '' })
     if (team == null) { return }
 
-    if (body.channel?.id == null) { return }
-    const channel = await Channel.findOneBy({ slackId: body.channel?.id })
-    if ( channel == null) { return }
+    const user = await User.findOneBy({ slackId: body.user.id || '' })
+    await User.save({
+      id: user?.id,
+      slackId: body.user.id, 
+      team: team, 
+      birthday: new Date(birthday)
+    })
 
-    const user = await User.save({ slackId: body.user.id, team: team, channel: channel })
-    if (user == null) { return }
-
-    try {    
-      user.birthday = new Date(birthday)
-      await user.save()
-
-      await client.chat.postMessage({
-        channel: body.user.id,
-        text: `誕生日を${birthday}に登録しました`
-      });      
-    } catch (error) {
-      logger.error(error);
-    }
+    await client.chat.postMessage({
+      channel: body.user.id,
+      text: `誕生日を${birthday}に登録しました`
+    });      
   });

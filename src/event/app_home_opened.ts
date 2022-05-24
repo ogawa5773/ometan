@@ -15,7 +15,7 @@ app.event('app_home_opened', async ({ payload, client }) => {
           }
         },    
         {
-          "block_id": "assign_birthday",
+          "block_id": "home_assign_birthday",
           "type": "actions",
           "elements": [
             {
@@ -26,7 +26,7 @@ app.event('app_home_opened', async ({ payload, client }) => {
                 "text": "Select a date",
                 "emoji": true
               },
-              "action_id": "birthday_selected"
+              "action_id": "birthday_selected_via_home"
             }
           ]
         }
