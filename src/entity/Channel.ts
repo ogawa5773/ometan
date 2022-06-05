@@ -1,12 +1,12 @@
 import {
   Column,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  Timestamp,
   UpdateDateColumn,
   DeleteDateColumn,
+  Timestamp,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   BaseEntity
@@ -15,16 +15,17 @@ import {
 import { Team } from './Team'
 import { User } from './User'
 
+@Index(["slackId", "deletedAt"], { unique: true })
 @Entity()
 export class Channel extends BaseEntity {
 
   @PrimaryGeneratedColumn({ unsigned: true })
   readonly id: number
 
-  @Column({ unique: true })
+  @Column()
   slackId: string
 
-  @ManyToOne(() => Team, (team) => team.channels)
+  @ManyToOne(() => Team)
   team: Team
 
   @OneToMany(() => User, (user) => user.team)

@@ -5,12 +5,13 @@ import { Channel } from "../entity/Channel";
 app.event('member_joined_channel',async ({ body, say }) => {
   if (body.api_app_id != process.env.APP_ID) { return }
   
-  let team = await Team.findOneBy({ slackId: body.team_id})
-  const channel = await Channel.findOneBy({ slackId: body.event.channel })
-
+  let team = await Team.findOneBy({ slackId: body.team_id })
   team = await Team.save({ id: team?.id, slackId: body.team_id })
+
+  const channel = await Channel.findOneBy({ slackId: body.event.channel })
   await Channel.save({ id: channel?.id , slackId: body.event.channel, team: team })
 
+  // TODO リッチにする
   say({
     "blocks": [
       {

@@ -7,6 +7,7 @@ import {
     UpdateDateColumn,
     DeleteDateColumn,
     Entity,
+    Index,
     ManyToOne,
     BaseEntity
   } from 'typeorm'
@@ -14,13 +15,14 @@ import {
 import { Team } from './Team'
 import { Channel } from './Channel'
 
+@Index(["slackId", "deletedAt"], { unique: true })
 @Entity()
 export class User extends BaseEntity {
 
     @PrimaryGeneratedColumn({ unsigned: true })
     readonly id: number
 
-    @Column({ unique: true })
+    @Column()
     slackId: string
 
     @ManyToOne(() => Team, (team) => team.users)

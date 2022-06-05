@@ -1,12 +1,12 @@
 import {
   Column,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  Timestamp,
   UpdateDateColumn,
   DeleteDateColumn,
+  Timestamp,
   Entity,
+  Index,
   OneToMany,
   BaseEntity
 } from 'typeorm'
@@ -14,19 +14,20 @@ import {
 import { Channel } from './Channel'
 import { User } from './User'
 
+@Index(["slackId", "deletedAt"], { unique: true })
 @Entity()
 export class Team extends BaseEntity {
 
   @PrimaryGeneratedColumn({ unsigned: true })
   readonly id: number
 
-  @OneToMany(() => Channel, (channel) => channel.team, { cascade: ["remove"] })
+  @OneToMany(() => Channel, (channel) => channel.team, { cascade: true })
   channels: Channel[]
 
-  @OneToMany(() => User, (user) => user.team, { cascade: ["remove"] })
+  @OneToMany(() => User, (user) => user.team, { cascade: true })
   users: User[]
 
-  @Column({ unique: true })
+  @Column()
   slackId: string
 
   @Column({ nullable: true })
