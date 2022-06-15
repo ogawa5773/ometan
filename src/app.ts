@@ -1,12 +1,19 @@
-import { App } from '@slack/bolt';
+import { App, AwsLambdaReceiver } from '@slack/bolt';
+import { Context, APIGatewayProxyCallback, APIGatewayEvent } from 'aws-lambda';
 import { AppDataSource } from "./data-source"
+
+const awsLambdaReceiver = new AwsLambdaReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET || '',
+});
+
+export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
+  const handler = await awsLambdaReceiver.start();
+  return handler(event, context, callback);
+}
 
 export const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  appToken: process.env.SLACK_APP_TOKEN,
-  socketMode: true,
-  port: 3000
+  receiver: awsLambdaReceiver
 });
 
 AppDataSource.initialize()
